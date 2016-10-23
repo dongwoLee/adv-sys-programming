@@ -1,9 +1,15 @@
+//when doing compile, gcc -O3 -o merge merge.c
+
+
 #include <stdio.h>
 #include <unistd.h>
 #include <string.h>
 #include <sys/time.h>
 
+#define BUFF_SIZE 100
+
 int readaline_and_out(FILE *fin, FILE *fout);
+const char* reverseString(char* str);
 
 int
 main(int argc, char *argv[])
@@ -31,7 +37,9 @@ main(int argc, char *argv[])
         perror(argv[3]);
         goto leave2;
     }
-    
+    setvbuf(file1,NULL,_IOFBF,BUFF_SIZE);
+    setvbuf(file2,NULL,_IOFBF,BUFF_SIZE);
+    setvbuf(fout,NULL,_IOFBF,BUFF_SIZE);
     gettimeofday(&before, NULL);
     do {
         if (!eof1) {
@@ -64,13 +72,13 @@ leave0:
     return ret; 
 }
 
-/* Read a line from fin and write it to fout */
-/* return 1 if fin meets end of file */
 int
 readaline_and_out(FILE *fin, FILE *fout)
-{    
+{
     int ch, count = 0;
-
+    char str[1024]="";
+    char *res;
+    res = str;
     do {
         if ((ch = fgetc(fin)) == EOF) {
             if (!count)
@@ -80,9 +88,30 @@ readaline_and_out(FILE *fin, FILE *fout)
                 break;
             }
         }
-        fputc(ch, fout);
+        *res++ = ch;
         count++;
     } while (ch != 0x0a);
-    return 0;
+    
+    fputs(reverseString(str),fout);
+   
+    return 0; 
 }
+
+const char* reverseString(char* str)
+{
+    int i, j;
+    char temp;
+    i=j=0;
+
+    j=strlen(str)-2;
+    for (i=0; i<j; i++, j--)
+    {
+        temp=str[i];
+        str[i]=str[j];
+        str[j]=temp;
+    }
+
+    return str;
+}
+
 

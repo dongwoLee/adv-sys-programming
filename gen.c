@@ -48,7 +48,7 @@ usage2: fprintf(stderr, "File size should be >= 0, <= %d\n", MAX_FILE_SIZE);
     srandom(seed.tv_usec);
 
     while (num_file) {
-        sprintf(fname, "/tmp/file_%04d", num_file);
+        sprintf(fname, "/tmp/file_%d", num_file);
         if ((fout = fopen(fname, "wt")) == NULL) {
             perror(fname);
             return 1;
